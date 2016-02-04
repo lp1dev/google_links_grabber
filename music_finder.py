@@ -84,7 +84,7 @@ def save_in_db(query, link):
         links_array = links_array.decode("utf-8")
     links_array = json.loads(links_array)
     links_array.append(link)
-    r.set(query, jsonify(links_array))
+    r.set(query, json.dumps(links_array))
     print("Getting value in redis for %s : [%s]" %(query, r.get(query)))
 
 def check_in_db(query):
