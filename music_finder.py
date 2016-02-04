@@ -76,6 +76,7 @@ def handle_link(query, link):
         save_in_db(query, link)
         
 def save_in_db(query, link):
+    r = db_connect()
     links_array = r.get(query)
     if links_array is None:
         links_array = "[]"
@@ -83,7 +84,6 @@ def save_in_db(query, link):
         links_array = links_array.decode("utf-8")
     links_array = json.loads(links_array)
     links_array.append(link)
-    r = db_connect()
     r.set(query, jsonify(links_array))
     print("Getting value in redis for %s : [%s]" %(query, r.get(query)))
 
