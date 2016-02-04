@@ -55,18 +55,18 @@ def get_matching_links(origin_url, links, query):
     matching_links = []
     query_terms = query.split(" ")
     for link in links:
+        match = 0
         if type(link) == str and link[-4:].lower() == ".mp3":
-            match = 0
             for term in query_terms:
                 try:
-                    if verbose:
-                        print("\t\t[Checking if %s in %s]" %(term.lower(), link.lower()))
                     if term.replace(" ", "").lower() in link.lower():
                         if verbose:
                             print("\t\t[\033[0;32m%s FOUND in %s match +1\033[0;0m]" %(term, link)) 
                         match += 1
-            if match == len(query_terms):
-                matching_links.append(origin_url+link)
+                except UnicodeEncodeError as e:
+                    print(e)
+        if match == len(query_terms):
+            matching_links.append(origin_url+link)
     return matching_links
 
 def handle_link(query, link):
@@ -74,7 +74,6 @@ def handle_link(query, link):
     matching_links = get_matching_links(link, file_links, argv[1])
     for link in matching_links:
         save_in_db(query, link)
-
         
 def save_in_db(query, link):
     links_array = r.get(query)
