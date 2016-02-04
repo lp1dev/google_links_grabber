@@ -18,7 +18,8 @@ def search(query):
 
 @app.route("/fetch/<query>")
 def fetch(query):
-    return fetch_links(query)
+    success, value = fetch_links(query)
+    return value
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000, threaded=True)

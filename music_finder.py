@@ -15,7 +15,7 @@ sleep_time = 0
 query_string = 'index of last modified parent directory wma mp3 ogg %s'
 indexof_identifiers=["Index of", "Name", "Last modified", "Size", "Description", "Parent Directory"]
 verbose=True
-threaded=False
+threaded=True
 
 def db_connect():
     return redis.StrictRedis(host="2.lp1.eu", port=6379, db=0)
@@ -119,7 +119,7 @@ def fetch_links(query):
     r = db_connect()
     if r.get(query) is None:
         return False, "Query returned no results :("
-    return True, "Query done"
+    return True, r.get(query).decode("utf-8")
 
 if __name__ == "__main__":
     main()
