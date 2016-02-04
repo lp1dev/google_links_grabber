@@ -82,7 +82,7 @@ def save_in_db(query, link):
     else:
         links_array = links_array.decode("utf-8")
     links_array = json.loads(links_array)
-    if link not in links_array:
+    if "http://"+link not in links_array:
         links_array.append("http://"+link)
         r.set(query, json.dumps(links_array))
         print("Getting value in redis for %s : [%s]" %(query, r.get(query)))
