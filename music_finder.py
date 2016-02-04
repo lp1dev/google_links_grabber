@@ -6,7 +6,6 @@ from concurrent.futures import ProcessPoolExecutor
 from threading import active_count
 from sys import argv
 from time import sleep
-from flask import jsonify
 import json
 import requests
 import redis
@@ -71,7 +70,7 @@ def get_matching_links(origin_url, links, query):
 
 def handle_link(query, link):
     file_links = fetch_file_links(link)
-    matching_links = get_matching_links(link, file_links, argv[1])
+    matching_links = get_matching_links(link, file_links, query)
     for link in matching_links:
         save_in_db(query, link)
         
@@ -87,6 +86,13 @@ def save_in_db(query, link):
     r.set(query, json.dumps(links_array))
     print("Getting value in redis for %s : [%s]" %(query, r.get(query)))
 
+def get_matching_weight(terms, text):
+    weight = 0
+    for term in terms:
+        if term.lower() in text.lower():
+            weight += 1
+    return weight
+    
 def check_in_db(query):
     query_terms = query.split(" ")
     r = db_connect()
@@ -96,28 +102,24 @@ def check_in_db(query):
         for key in r.keys("*"):
             if term in key.decode("utf-8"):
                 found_terms += 1
-    if found_terms >= len(query_terms) - 1:
-        link_list = json.loads(r.get(key).decode("utf-8"))
-        results[key.decode("utf-8")] = link_list
+                link_list = json.loads(r.get(key).decode("utf-8"))
+                results[key.decode("utf-8")] = link_list, get_matching_weight(query_terms, key.decode("utf-8")) 
         return results, True
     return results, False
-    
-def main():
-    if len(argv) != 2:
-        return usage()
-    results, exists = check_in_db(argv[1])
-    if exists:
-        print(results)
-        return
-    links = get_links(query_string %argv[1], 0)
+
+def fetch_links(query):
+    links = get_links(query_string %query, 0)
     for link in links:
         if threaded:
             with ProcessPoolExecutor(max_workers=max_threads) as e:
-                thread = [e.submit(handle_link, argv[1], link)]
+                thread = [e.submit(handle_link, query, link)]
                 sleep(sleep_time)
         else:
-            handle_link(argv[1], link)
-    return 0
+            handle_link(query, link)
+    r = db_connect()
+    if r.get(query) is None:
+        return False, "Query returned no results :("
+    return True, "Query done"
 
 if __name__ == "__main__":
     main()
