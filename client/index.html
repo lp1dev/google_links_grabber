@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0288d1">
+    <title>Grabber - Music Finder</title>
+    <!--CDN Imports-->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,100' rel='stylesheet' type='text/css'>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--Local CSS imports -->
+    <link rel="stylesheet" type="text/css" href="res/css/grabber.css">
+    <link rel="stylesheet" type="text/css" href="res/css/purejs.css">
+    <link rel="stylesheet" type="text/css" href="res/css/purejs-cards.css">
+    <link rel="stylesheet" type="text/css" href="res/css/theme-blue.css">
+    <!--Local JS imports-->
+    <script type="text/javascript" src="res/js/jquery.min.js"></script>
+    <script type="text/javascript" src="res/js/drawer.js"></script>
+    <script type="text/javascript" src="res/js/grabber.js"></script>
+  </head>
+  <body>
+    <div id="filter" onclick="drawer()"></div><!--Filter for the mobile drawer-->
+    <!--Header-->
+    <div class="header shadowed" id="header">
+      <div id="headerContent">
+	<span onclick="drawer()" id="hamburger">&#9776</span>
+	<span id="logo"><b>G</b>rabber</span>
+	<span id="page_title"></span>
+      </div>
+    </div>
+    <!--Header End-->
+    <!--Wrapper-->
+    <div class="wrapper" >
+      <ul class="drawer shadowed closed" id="drawer" ondrag="drawer()">
+	<li class="drawerHeader">
+	  [<a href="http://lp1.eu">Lp1.eu</a>]
+	</li>
+	<li class="drawerRow">
+	  <i class="fa fa-rss drawerIcon"></i>
+	  <a href="#">Element 1</a>
+	</li>
+	<li class="drawerRow">
+	  <i class="fa fa-rss drawerIcon"></i>
+	  <a href="#">Element 2</a>
+	</li>
+	<li class="drawerFooter">
+	  Jeremie Amsellem - <a href="http://lp1.eu">Lp1.eu</a> - <a href="http://github.com/lupin012345/">GitHub</a>
+	</li>
+      </ul>
+      <!--Main Container-->
+      <div class="mainContainer" id="mainContainer">
+	<div class="card" draggable="true">
+	  <h4>Search</h4>
+	  <p>
+	    <input type="search" class="search" id="search" placeholder="Metallica - One" onChange="hasChanged();">
+	    <button onClick="hasChanged();">Search</button>
+	  </p>
+	  <div id="contentDiv"></div>
+	</div>
+      </div>
+      <!--Main Container End-->
+    </div>
+    <!--Wrapper End-->
+  </body>
+</html>

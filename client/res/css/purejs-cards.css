@@ -1,0 +1,13 @@
+.card{
+    border-radius:2px;
+    padding:20px;
+    margin:10px;
+    background: white;
+    -webkit-box-shadow: 3px 4px 3px -3px rgba(0,0,0,0.57);
+    -moz-box-shadow: 3px 4px 3px -3px rgba(0,0,0,0.57);
+    box-shadow: 3px 4px 3px -3px rgba(0,0,0,0.57);
+}
+
+.card a:link, a:visited{
+		  text-decoration:none;
+}
