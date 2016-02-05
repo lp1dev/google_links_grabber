@@ -12,7 +12,8 @@ import redis
 
 max_threads=10
 sleep_time = 0
-query_string = 'index of last modified parent directory wma mp3 ogg %s'
+file_type=".mp3"
+query_string = 'intitle:index of last modified parent directory '+file_type+' "%s"'
 indexof_identifiers=["Index of", "Name", "Last modified", "Size", "Description", "Parent Directory"]
 verbose=True
 threaded=True
@@ -55,7 +56,7 @@ def get_matching_links(origin_url, links, query):
     query_terms = query.split(" ")
     for link in links:
         match = 0
-        if type(link) == str and link[-4:].lower() == ".mp3":
+        if type(link) == str and link[-4:].lower() == file_type:
             for term in query_terms:
                 try:
                     if term.replace(" ", "").lower() in link.lower():
