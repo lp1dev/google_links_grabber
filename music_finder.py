@@ -111,6 +111,7 @@ def check_in_db(query):
     return results, False
 
 def fetch_links(query):
+    query = query.replace("-", "")
     links = get_links(query_string %query, 0)
     for link in links:
         if threaded:
