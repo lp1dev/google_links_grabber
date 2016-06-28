@@ -3,11 +3,11 @@
 import requests
 from sys import argv
 
-url = "http://2.lp1.eu:8888"
+url = "http://searx.me"
 user_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
-headers = {'User-Agent': user_agent
+headers = {
+    'User-Agent': user_agent
 }
-
 additional_params="categories=general"
 
 def usage():

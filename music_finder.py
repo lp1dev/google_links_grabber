@@ -6,6 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 from threading import active_count
 from sys import argv
 from time import sleep
+from blacklist import blacklisted_terms
 import json
 import requests
 import redis
@@ -13,7 +14,7 @@ import redis
 max_threads=10
 sleep_time = 0
 file_type=".mp3"
-query_string = 'intitle:index of last modified parent directory '+file_type+' "%s"'
+query_string = 'intitle:"index of" +"last modified" +"parent directory"+ ('+file_type+') %s'
 indexof_identifiers=["Index of", "Name", "Last modified", "Size", "Description", "Parent Directory"]
 verbose=True
 threaded=True
@@ -69,11 +70,20 @@ def get_matching_links(origin_url, links, query):
             matching_links.append(origin_url+link)
     return matching_links
 
+def is_blacklisted(link):
+    for term in blacklisted_terms:
+        if term in link:
+            return True
+    return False
+
 def handle_link(query, link):
-    file_links = fetch_file_links(link)
-    matching_links = get_matching_links(link, file_links, query)
-    for link in matching_links:
-        save_in_db(query, link)
+    if not is_blacklisted(link):
+        file_links = fetch_file_links(link)
+        matching_links = get_matching_links(link, file_links, query)
+        for link in matching_links:
+            save_in_db(query, link)
+    else:
+        print("[%s] is blacklisted" %link)
         
 def save_in_db(query, link):
     r = db_connect()
@@ -106,8 +116,11 @@ def check_in_db(query):
         for key in r.keys("*"):
             if term in key.decode("utf-8"):
                 found_terms += 1
-                link_list = json.loads(r.get(key).decode("utf-8"))
-                results[key.decode("utf-8")] = link_list, get_matching_weight(query_terms, key.decode("utf-8")) 
+                try:
+                    link_list = json.loads(r.get(key).decode("utf-8"))
+                    results[key.decode("utf-8")] = link_list, get_matching_weight(query_terms, key.decode("utf-8")) 
+                except Exception as e:
+                    print(e)
         return results, True
     return results, False
 
